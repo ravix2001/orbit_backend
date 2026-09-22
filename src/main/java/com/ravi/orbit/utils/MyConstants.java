@@ -11,7 +11,4 @@ public class MyConstants {
 
     public static final String RE_EMAIL = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,63}$";
 
-    public static final long JWT_TOKEN_VALIDITY = 1000 * 60 * 15;            // 15 minutes
-    public static final long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 7; // 7 days
-
 }
