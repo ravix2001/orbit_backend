@@ -2,6 +2,7 @@ package com.ravi.orbit.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ravi.orbit.enums.EOrderStatus;
+import com.ravi.orbit.enums.EOrderPaymentStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +20,7 @@ public class OrderDTO {
 
     public OrderDTO(UUID id, Long orderNumber, int totalItems, BigDecimal totalMarketPrice,
                     BigDecimal totalDiscount, BigDecimal totalAmount, EOrderStatus orderStatus,
-                    LocalDateTime orderDate, LocalDateTime deliveryDate,
+                    EOrderPaymentStatus paymentStatus, LocalDateTime orderDate, LocalDateTime deliveryDate,
                     UUID customerId, String customerName, String customerPhone, String customerImage) {
         this.id = id;
         this.orderNumber = orderNumber;
@@ -28,6 +29,7 @@ public class OrderDTO {
         this.totalDiscount = totalDiscount;
         this.totalAmount = totalAmount;
         this.orderStatus = orderStatus;
+        this.paymentStatus = paymentStatus;
         this.orderDate = orderDate.toLocalDate();
         this.deliveryDate = deliveryDate.toLocalDate();
         this.customerId = customerId;
@@ -42,13 +44,14 @@ public class OrderDTO {
     }
 
     public OrderDTO(UUID id, Long orderNumber, int totalItems, BigDecimal totalAmount, EOrderStatus orderStatus,
-                    LocalDateTime orderDate, LocalDateTime deliveryDate,
+                    EOrderPaymentStatus paymentStatus, LocalDateTime orderDate, LocalDateTime deliveryDate,
                     UUID customerId, String customerName, String customerPhone, String customerImage) {
         this.id = id;
         this.orderNumber = orderNumber;
         this.totalItems = totalItems;
         this.totalAmount = totalAmount;
         this.orderStatus = orderStatus;
+        this.paymentStatus = paymentStatus;
         this.orderDate = orderDate.toLocalDate();
         this.deliveryDate = deliveryDate.toLocalDate();
         this.customerId = customerId;
@@ -71,8 +74,7 @@ public class OrderDTO {
 
     private EOrderStatus orderStatus;
 
-//    @Embedded
-//    private PaymentDetails paymentDetails = new PaymentDetails();
+    private EOrderPaymentStatus paymentStatus;
 
     private LocalDate orderDate;
 
@@ -101,6 +103,8 @@ public class OrderDTO {
     private UUID productId;
 
     private ProductDTO product;
+
+    private List<OrderProductRequestDTO> products;
 
     private Map<UUID, Integer> variantQuantities; // variantId -> quantity
 

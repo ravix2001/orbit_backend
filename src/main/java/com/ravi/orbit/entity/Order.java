@@ -1,7 +1,7 @@
 package com.ravi.orbit.entity;
 
 import com.ravi.orbit.enums.EOrderStatus;
-import com.ravi.orbit.enums.EStatus;
+import com.ravi.orbit.enums.EOrderPaymentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,14 +37,18 @@ public class Order extends UIDBase {
     @Column(name = "order_status")
     private EOrderStatus orderStatus = EOrderStatus.PENDING;
 
-//    @Embedded
-//    private PaymentDetails paymentDetails = new PaymentDetails();
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
+    private EOrderPaymentStatus paymentStatus = EOrderPaymentStatus.UNPAID;
 
     @Column(name = "order_date")
     private LocalDateTime orderDate = LocalDateTime.now();
 
     @Column(name = "delivery_date")
     private LocalDateTime deliveryDate = orderDate.plusDays(3);     // delivery date = 3 days of order date
+
+    @Column(name = "stock_released", nullable = false)
+    private boolean stockReleased = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
