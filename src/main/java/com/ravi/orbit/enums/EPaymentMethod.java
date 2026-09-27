@@ -2,8 +2,8 @@ package com.ravi.orbit.enums;
 
 public enum EPaymentMethod {
 
-    KHALTI,
     ESEWA,
+    KHALTI,
     IMEPAY,
     ONLINE_BANKING,
     CASH,
