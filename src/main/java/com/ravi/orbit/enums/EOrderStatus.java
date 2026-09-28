@@ -8,6 +8,5 @@ public enum EOrderStatus {
     SHIPPED,
     DELIVERED,
     CANCELLED,
-    REFUNDED
 
 }

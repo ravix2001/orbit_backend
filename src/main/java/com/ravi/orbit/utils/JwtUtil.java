@@ -23,6 +23,12 @@ public class JwtUtil {
     @Value("${jwt.secret.key}")
     private String secretKey;
 
+    @Value("${jwt.access-token-expiration-ms}")
+    private long accessTokenValidity;
+
+    @Value("${jwt.refresh-token-expiration-ms}")
+    private long refreshTokenValidity;
+
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
@@ -65,12 +71,12 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("type", "access");
         claims.put("role", role);
-        return createToken(claims, username, MyConstants.JWT_TOKEN_VALIDITY);
+        return createToken(claims, username, accessTokenValidity);
     }
 
     public String generateRefreshToken(String username) {
         return createToken(Map.of("type", "refresh"),
-                username, MyConstants.REFRESH_TOKEN_VALIDITY);
+                username, refreshTokenValidity);
     }
 
     private String createToken(Map<String, Object> claims, String subject, long expirationMillis) {
