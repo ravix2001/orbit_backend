@@ -16,9 +16,6 @@ import com.ravi.orbit.service.IUserService;
 import com.ravi.orbit.utils.CommonMethods;
 import com.ravi.orbit.utils.MyConstants;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -223,11 +220,11 @@ public class ProductServiceImpl implements IProductService {
         return request;
     }
 
+//    @Caching(evict = {
+//            @CacheEvict(value = "products", key = "#request.id"),
+////            @CacheEvict(value = "product-pages", allEntries = true)
+//    })
     @Override
-    @Caching(evict = {
-            @CacheEvict(value = "products", key = "#request.id"),
-//            @CacheEvict(value = "product-pages", allEntries = true)
-    })
     public ProductDTO updateProduct(ProductDTO request) {
 
         Product product = getProductById(request.getId());
@@ -363,17 +360,18 @@ public class ProductServiceImpl implements IProductService {
         return request;
     }
 
-    @Override
+
 //    @Cacheable(
 //            value = "product-pages",
 //            key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort"
 //    )
+    @Override
     public Page<ProductDTO> getAllProducts(Pageable pageable) {
         return productRepository.getAllProducts(pageable);
     }
 
+//    @Cacheable(value = "products", key = "#productId")
     @Override
-    @Cacheable(value = "products", key = "#productId")
     public ProductDTO getProduct(UUID productId) {
 
         ProductDTO productDTO = getProductDTOById(productId);
@@ -441,22 +439,22 @@ public class ProductServiceImpl implements IProductService {
                         .ERR_MSG_NOT_FOUND + "Product: " + code));
     }
 
+//    @Caching(evict = {
+//            @CacheEvict(value = "products", key = "#id"),
+////            @CacheEvict(value = "product-pages", allEntries = true)
+//    })
     @Override
-    @Caching(evict = {
-            @CacheEvict(value = "products", key = "#id"),
-//            @CacheEvict(value = "product-pages", allEntries = true)
-    })
     public void deleteProduct(UUID id) {
         Product product = getProductById(id);
         product.setStatus(EStatus.DELETED);
         productRepository.save(product);
     }
 
+//    @Caching(evict = {
+//            @CacheEvict(value = "products", key = "#id"),
+////            @CacheEvict(value = "product-pages", allEntries = true)
+//    })
     @Override
-    @Caching(evict = {
-            @CacheEvict(value = "products", key = "#id"),
-//            @CacheEvict(value = "product-pages", allEntries = true)
-    })
     public void deleteProductHard(UUID id) {   // remaining to delete its children
         Product product = getProductById(id);
         productRepository.delete(product);
@@ -489,34 +487,6 @@ public class ProductServiceImpl implements IProductService {
         return productVariantRepository.getProductVariantById(variantId)
                 .orElseThrow(() -> new BadRequestException(MyConstants
                         .ERR_MSG_NOT_FOUND + "Product Variant: " + variantId));
-    }
-
-    private Product mapToProductEntity(Product product, ProductDTO productDTO) {
-        product.setCode(productDTO.getCode());
-        product.setName(productDTO.getName());
-        product.setBrand(productDTO.getBrand());
-        product.setFeatures(productDTO.getFeatures());
-        product.setDescription(productDTO.getDescription());
-        product.setMarketPrice(productDTO.getMarketPrice());
-        product.setDiscountPercent(productDTO.getDiscountPercent());
-
-        // discountAmount = marketPrice * discountPercent / 100
-        BigDecimal discountAmount =
-                productDTO.getMarketPrice()
-                        .multiply(productDTO.getDiscountPercent())
-                        .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-
-        product.setDiscountAmount(discountAmount);
-
-        // sellingPrice = marketPrice - discountAmount
-        BigDecimal sellingPrice =
-                productDTO.getMarketPrice()
-                        .subtract(discountAmount);
-
-        product.setSellingPrice(sellingPrice);
-        product.setImageUrl(productDTO.getImageUrl());
-
-        return product;
     }
 
     private String generateProductCode() {
