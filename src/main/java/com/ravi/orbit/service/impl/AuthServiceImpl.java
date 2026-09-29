@@ -15,6 +15,7 @@ import com.ravi.orbit.repository.UserRepository;
 import com.ravi.orbit.repository.UserRolesRepository;
 import com.ravi.orbit.service.IAuthService;
 import com.ravi.orbit.service.IUserService;
+import com.ravi.orbit.utils.CommonMethods;
 import com.ravi.orbit.utils.JwtUtil;
 import com.ravi.orbit.utils.MyConstants;
 import com.ravi.orbit.utils.Validator;
@@ -44,11 +45,16 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public AuthDTO userSignup(UserDTO userDTO) {
+        Validator.validateUserSignup(userDTO);
+//        if (CommonMethods.isEmpty(userDTO.getPhone())){
+//            userDTO.setPhone("");
+//        }
         return signup(userDTO, ERole.ROLE_USER);
     }
 
     @Override
     public AuthDTO sellerSignup(UserDTO userDTO) {
+        Validator.validateSellerSignup(userDTO);
         return signup(userDTO, ERole.ROLE_SELLER);
     }
 
@@ -69,7 +75,7 @@ public class AuthServiceImpl implements IAuthService {
 
     public AuthDTO signup(UserDTO userDTO, ERole role) {
 
-        Validator.validateUserSignup(userDTO);
+//        Validator.validateUserSignup(userDTO);
 
         User user = new User();
         userService.mapToUserEntity(user, userDTO);
