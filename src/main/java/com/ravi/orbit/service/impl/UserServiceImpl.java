@@ -32,7 +32,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserDTO handleUser(UserDTO userDTO) {
 
-        Validator.validateUserSignup(userDTO);
+        Validator.validateSellerSignup(userDTO);
 
         User user = null;
 

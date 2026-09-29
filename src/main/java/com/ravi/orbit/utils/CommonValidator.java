@@ -32,11 +32,11 @@ public class CommonValidator {
         }
     }
 
-    public static void validateDevice(AuthDTO authDTO) {
-        if (CommonMethods.isEmpty(authDTO.getDeviceId())) {
+    public static void validateDevice(String deviceId, String deviceName) {
+        if (CommonMethods.isEmpty(deviceId)) {
             throw new BadRequestException("DeviceId cannot be empty");
         }
-        if (CommonMethods.isEmpty(authDTO.getDeviceName())) {
+        if (CommonMethods.isEmpty(deviceName)) {
             throw new BadRequestException("DeviceName cannot be empty");
         }
     }
