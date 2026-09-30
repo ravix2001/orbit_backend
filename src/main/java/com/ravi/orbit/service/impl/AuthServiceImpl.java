@@ -77,6 +77,15 @@ public class AuthServiceImpl implements IAuthService {
 
 //        Validator.validateUserSignup(userDTO);
 
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new BadRequestException("User already exists with email: " + userDTO.getEmail());
+        }
+
+        if (!CommonMethods.isEmpty(userDTO.getPhone())
+                && userRepository.existsByPhone(userDTO.getPhone())) {
+            throw new BadRequestException("User already exists with phone: " + userDTO.getPhone());
+        }
+
         User user = new User();
         userService.mapToUserEntity(user, userDTO);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
