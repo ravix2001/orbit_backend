@@ -2,6 +2,12 @@ package com.ravi.orbit.utils;
 
 public class MyConstants {
 
+    public static final String OAUTH_DEVICE_ID = "OAUTH_DEVICE_ID";
+    public static final String OAUTH_DEVICE_NAME = "OAUTH_DEVICE_NAME";
+
+    public static final String OAUTH_GOOGLE_PROVIDER = "google";
+
+
     public static final String ERR_MSG_NOT_FOUND = "Not found: ";
     public static final String ERR_MSG_BAD_REQUEST = "Invalid: ";
     public static final String ERR_MSG_EMPTY = "Empty: ";

@@ -1,6 +1,8 @@
 package com.ravi.orbit.config;
 
 import com.ravi.orbit.filter.JwtFilter;
+import com.ravi.orbit.security.OAuth2LoginFailureHandler;
+import com.ravi.orbit.security.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,11 +30,15 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
 
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .authorizeHttpRequests(auth -> auth
 
@@ -70,7 +76,10 @@ public class SecurityConfig {
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-//                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(oauth -> oauth
+                        .successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler(oAuth2LoginFailureHandler)
+                )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

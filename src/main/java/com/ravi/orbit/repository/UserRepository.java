@@ -2,6 +2,7 @@ package com.ravi.orbit.repository;
 
 import com.ravi.orbit.dto.UserDTO;
 import com.ravi.orbit.entity.User;
+import com.ravi.orbit.enums.EAuthProvider;
 import com.ravi.orbit.enums.ERole;
 import com.ravi.orbit.enums.EStatus;
 import org.springframework.data.domain.Page;
@@ -48,6 +49,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByUsername(String username);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByProviderAndProviderId(EAuthProvider provider, String providerId);
+
+    boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
 
