@@ -3,12 +3,15 @@ package com.ravi.orbit.controller;
 import com.ravi.orbit.dto.AuthDTO;
 import com.ravi.orbit.dto.UserDTO;
 import com.ravi.orbit.service.IAuthService;
+import com.ravi.orbit.utils.MyConstants;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -17,6 +20,16 @@ import java.util.Map;
 public class AuthController {
 
     private final IAuthService authService;
+
+    @GetMapping("/google")
+    public void googleLogin(@RequestParam String deviceId, @RequestParam String deviceName,
+                            HttpSession session, HttpServletResponse response) throws IOException {
+
+        session.setAttribute(MyConstants.OAUTH_DEVICE_ID, deviceId);
+        session.setAttribute(MyConstants.OAUTH_DEVICE_NAME, deviceName);
+
+        response.sendRedirect("/oauth2/authorization/google");
+    }
 
     /* ===================== SIGNUP ===================== */
 

@@ -1,6 +1,7 @@
 package com.ravi.orbit.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ravi.orbit.enums.EAuthProvider;
 import com.ravi.orbit.enums.EStatus;
 import com.ravi.orbit.enums.EGender;
 
@@ -9,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +21,13 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-@Table(name = "user_tbl")
+@Table(name = "user_tbl",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_user_provider_provider_id",
+                        columnNames = {"provider", "provider_id"}
+                )
+        })
 public class User extends UIDBase {
 
     @Serial
@@ -33,13 +42,13 @@ public class User extends UIDBase {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true, nullable = false)
     private String username;
 
-    @Column(name = "phone")
+    @Column(name = "phone", unique = true)
     private String phone;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -52,6 +61,15 @@ public class User extends UIDBase {
 
     @Column(name = "dob")
     private LocalDate dob;
+
+    // provider
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
+    private EAuthProvider provider = EAuthProvider.LOCAL;
+
+    // External id from Google/GitHub, null for LOCAL accounts
+    @Column(name = "provider_id")
+    private String providerId;
 
     // status
     @Enumerated(EnumType.STRING)

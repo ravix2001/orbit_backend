@@ -116,8 +116,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new BadRequestException(MyConstants
-                        .ERR_MSG_NOT_FOUND + "User: " + username));
+                .orElseThrow(() -> new BadRequestException("User not found with username: " + username));
     }
 
     @Override
