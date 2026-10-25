@@ -1,6 +1,7 @@
 package com.ravi.orbit.controller;
 
 import com.ravi.orbit.dto.UserDTO;
+import com.ravi.orbit.enums.ERole;
 import com.ravi.orbit.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +20,16 @@ public class SellerController {
     public ResponseEntity<UserDTO> getUserProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        return ResponseEntity.ok(userService.getUserDTOByUsername(username));
+        return ResponseEntity.ok(userService.getUserDTOByUsername(username, ERole.ROLE_SELLER));
     }
 
     @PutMapping("/update")
     public ResponseEntity<UserDTO> updateProfile(@RequestBody UserDTO userDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        return ResponseEntity.ok(userService.updateProfile(userDto, username));
+        UserDTO updatedUser = userService.updateProfile(userDto, username);
+        updatedUser.setActiveRole(ERole.ROLE_SELLER);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/delete")

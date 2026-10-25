@@ -1,15 +1,14 @@
 package com.ravi.orbit.entity;
 
+import com.ravi.orbit.enums.ERole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,6 +24,17 @@ public class RefreshToken extends UIDBase {
 
     @Column(name = "username", nullable = false)
     private String username;
+
+    /*
+     * The role/portal this token was issued for.
+     *
+     * A user may hold multiple roles (e.g. ROLE_USER + ROLE_SELLER).
+     * Persisting the role here lets a refresh reissue an access token
+     * for the SAME role instead of an arbitrary one.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private ERole role;
 
     @Column(name = "expiryDate", nullable = false)
     private LocalDateTime expiryDate;

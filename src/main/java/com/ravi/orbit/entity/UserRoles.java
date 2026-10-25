@@ -9,7 +9,15 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "user_roles_tbl")
+@Table(
+        name = "user_roles_tbl",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_user_role",
+                        columnNames = {"user_id", "role_id"}
+                )
+        }
+)
 public class UserRoles extends UIDBase {
 
     private static final long serialVersionUID = 1L;

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -20,41 +21,6 @@ public class UserDTO {
         this.password = password;
         this.deviceId = deviceId;
         this.deviceName = deviceName;
-    }
-
-    public UserDTO(UUID id, String firstName, String middleName, String lastName, String phone, String email,
-                   String username, String imageUrl, ERole role, EStatus status){
-        this.id = id;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
-        this.username = username;
-        this.imageUrl = imageUrl;
-        this.role = role;
-        this.status = status;
-    }
-
-    public UserDTO(UUID id, String firstName, String middleName, String lastName, String phone, String email,
-                   String username, EGender gender, LocalDate dob, ERole role, EStatus status, String imageUrl,
-                   String address, String zipcode, String state, String countryCode) {
-        this.id = id;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
-        this.username = username;
-        this.gender = gender;
-        this.dob = dob;
-        this.role = role;
-        this.status = status;
-        this.imageUrl = imageUrl;
-        this.address = address;
-        this.zipcode = zipcode;
-        this.state = state;
-        this.countryCode = countryCode;
     }
 
     private UUID id;
@@ -77,7 +43,11 @@ public class UserDTO {
 
     private LocalDate dob;
 
-    private ERole role;
+    /** All active roles assigned through user_roles_tbl. */
+    private List<ERole> roles;
+
+    /** The role carried by the current access token, when this response is auth-scoped. */
+    private ERole activeRole;
 
     private EStatus status;
 

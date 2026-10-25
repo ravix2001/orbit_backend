@@ -23,6 +23,12 @@ public class CommonValidator {
         }
     }
 
+    public static void validatePassword(String password) {
+        if (CommonMethods.isEmpty(password) || password.length() < 8) {
+            throw new BadRequestException("Password must be at least 8 characters long");
+        }
+    }
+
     public static void validateAuth(AuthDTO authDTO) {
         if (CommonMethods.isEmpty(authDTO.getUsername())) {
             throw new BadRequestException("Username cannot be empty");

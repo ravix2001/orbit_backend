@@ -20,6 +20,8 @@ public interface IUserService {
 
     UserDTO getUserDTOByUsername(String username);
 
+    UserDTO getUserDTOByUsername(String username, ERole activeRole);
+
     User getUserPrincipal();
 
 //    UserDTO getUserAuthByUsername(String username);

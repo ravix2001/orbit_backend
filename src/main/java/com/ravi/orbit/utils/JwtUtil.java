@@ -52,7 +52,15 @@ public class JwtUtil {
     }
 
     public String extractRole(String token) {
-        return extractAllClaims(token).get("role").toString();
+        Object role = extractAllClaims(token).get("role");
+        if (role == null) {
+            throw new InvalidTokenException("Token has no role");
+        }
+        try {
+            return ERole.valueOf(role.toString()).name();
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidTokenException("Token has an invalid role");
+        }
     }
 
     public Boolean isTokenExpired(String token) {

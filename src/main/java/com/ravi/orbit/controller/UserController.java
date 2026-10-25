@@ -50,14 +50,16 @@ public class UserController {
     public ResponseEntity<UserDTO> getUserProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        return ResponseEntity.ok(userService.getUserDTOByUsername(username));
+        return ResponseEntity.ok(userService.getUserDTOByUsername(username, activeRole(authentication)));
     }
 
     @PutMapping("/update")
     public ResponseEntity<UserDTO> updateProfile(@RequestBody UserDTO userDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        return ResponseEntity.ok(userService.updateProfile(userDto, username));
+        UserDTO updatedUser = userService.updateProfile(userDto, username);
+        updatedUser.setActiveRole(activeRole(authentication));
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/delete")
@@ -66,6 +68,13 @@ public class UserController {
         String username = authentication.getName();
         userService.deleteUser(username);
         return ResponseEntity.ok().build();
+    }
+
+    private ERole activeRole(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .findFirst()
+                .map(authority -> ERole.valueOf(authority.getAuthority()))
+                .orElseThrow(() -> new IllegalStateException("Authenticated user has no role"));
     }
 
 }

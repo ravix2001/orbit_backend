@@ -9,6 +9,7 @@ public class Validator {
     public static void validateUserSignup(UserDTO request) {
 //        CommonValidator.validatePhoneNo(request.getPhone());
         CommonValidator.validateEmail(request.getEmail());
+        CommonValidator.validatePassword(request.getPassword());
         CommonValidator.validateDevice(request.getDeviceId(), request.getDeviceName());
     }
 

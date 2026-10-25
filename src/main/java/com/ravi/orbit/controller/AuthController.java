@@ -2,6 +2,7 @@ package com.ravi.orbit.controller;
 
 import com.ravi.orbit.dto.AuthDTO;
 import com.ravi.orbit.dto.UserDTO;
+import com.ravi.orbit.enums.ERole;
 import com.ravi.orbit.service.IAuthService;
 import com.ravi.orbit.utils.MyConstants;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,12 +22,32 @@ public class AuthController {
 
     private final IAuthService authService;
 
-    @GetMapping("/google")
-    public void googleLogin(@RequestParam String deviceId, @RequestParam String deviceName,
-                            HttpSession session, HttpServletResponse response) throws IOException {
+    @GetMapping("/google/customer")
+    public void googleCustomerLogin(
+            @RequestParam(required = false) String deviceId,
+            @RequestParam(required = false) String deviceName,
+            HttpSession session,
+            HttpServletResponse response
+    ) throws IOException {
 
         session.setAttribute(MyConstants.OAUTH_DEVICE_ID, deviceId);
         session.setAttribute(MyConstants.OAUTH_DEVICE_NAME, deviceName);
+        session.setAttribute(MyConstants.OAUTH_LOGIN_ROLE, ERole.ROLE_USER.name());
+
+        response.sendRedirect("/oauth2/authorization/google");
+    }
+
+    @GetMapping("/google/seller")
+    public void googleSellerLogin(
+            @RequestParam(required = false) String deviceId,
+            @RequestParam(required = false) String deviceName,
+            HttpSession session,
+            HttpServletResponse response
+    ) throws IOException {
+
+        session.setAttribute(MyConstants.OAUTH_DEVICE_ID, deviceId);
+        session.setAttribute(MyConstants.OAUTH_DEVICE_NAME, deviceName);
+        session.setAttribute(MyConstants.OAUTH_LOGIN_ROLE, ERole.ROLE_SELLER.name());
 
         response.sendRedirect("/oauth2/authorization/google");
     }
