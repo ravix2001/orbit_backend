@@ -1,9 +1,13 @@
 package com.ravi.orbit.utils;
 
+import com.ravi.orbit.enums.ERole;
+
 public class MyConstants {
 
     public static final String OAUTH_DEVICE_ID = "OAUTH_DEVICE_ID";
     public static final String OAUTH_DEVICE_NAME = "OAUTH_DEVICE_NAME";
+
+    public static final String OAUTH_LOGIN_ROLE = "OAUTH_LOGIN_ROLE";
 
     public static final String OAUTH_GOOGLE_PROVIDER = "google";
 

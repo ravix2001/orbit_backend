@@ -11,10 +11,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -25,6 +24,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity   // enables @PreAuthorize (e.g. on UserController admin endpoints)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -43,11 +43,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         // ===== PUBLIC ACTUATOR HEALTH =====
-                                .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
+
                         // ===== ADMIN ONLY =====
                         .requestMatchers(
                                 "/actuator/**",
                                 "/api/admin/**",
+                                "/api/roles/**",
                                 "/api/categories/handleCategory",
                                 "/api/categories/deleteCategory/**",
                                 "/api/categories/deleteCategoryHard/**"
@@ -65,6 +67,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/cart/**",
                                 "/api/user/**",
+                                "/api/users/**",
+                                "/api/orders/**",
                                 "/api/email-verification/**"
                         ).authenticated()
 
@@ -88,11 +92,6 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Value("${cors.allowed.origins}")

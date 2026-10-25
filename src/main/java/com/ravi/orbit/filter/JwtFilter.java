@@ -1,7 +1,13 @@
 package com.ravi.orbit.filter;
 
+import com.ravi.orbit.entity.User;
+import com.ravi.orbit.enums.ERole;
+import com.ravi.orbit.enums.EStatus;
 import com.ravi.orbit.exceptions.ExpiredTokenException;
 import com.ravi.orbit.exceptions.InvalidTokenException;
+import com.ravi.orbit.repository.UserRepository;
+import com.ravi.orbit.repository.RoleRepository;
+import com.ravi.orbit.utils.CommonMethods;
 import com.ravi.orbit.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,6 +29,8 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     protected void doFilterInternal(
@@ -52,6 +60,20 @@ public class JwtFilter extends OncePerRequestFilter {
             String username = jwtUtil.extractUsername(token);
             String role = jwtUtil.extractRole(token);
 
+            if (CommonMethods.isEmpty(role)) {
+                throw new InvalidTokenException("Token has no role");
+            }
+
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new InvalidTokenException("User no longer exists"));
+            if (!EStatus.ACTIVE.equals(user.getStatus())) {
+                throw new InvalidTokenException("User account is not active");
+            }
+            if (!roleRepository.existsRoleByUserIdAndRoleTitleAndStatus(
+                    user.getId(), ERole.valueOf(role), EStatus.ACTIVE)) {
+                throw new InvalidTokenException("User no longer has this role");
+            }
+
             SimpleGrantedAuthority authority =
                     new SimpleGrantedAuthority(role);
 
@@ -70,8 +92,10 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (ExpiredTokenException ex) {
+            SecurityContextHolder.clearContext();
             sendUnauthorized(response, "Token has expired");
         } catch (InvalidTokenException ex) {
+            SecurityContextHolder.clearContext();
             sendUnauthorized(response, "Invalid token");
         }
     }

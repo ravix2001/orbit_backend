@@ -1,6 +1,5 @@
 package com.ravi.orbit.repository;
 
-import com.ravi.orbit.dto.UserDTO;
 import com.ravi.orbit.entity.User;
 import com.ravi.orbit.enums.EAuthProvider;
 import com.ravi.orbit.enums.ERole;
@@ -15,31 +14,10 @@ import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    @Query("SELECT NEW com.ravi.orbit.dto.UserDTO(u.id, u.firstName, u.middleName, u.lastName, " +
-            " u.phone, u.email, u.username, u.imageUrl, r.title, u.status) " +
-            " FROM UserRoles ur " +
-            " JOIN ur.user u " +
-            " JOIN ur.role r " +
-            " WHERE r.title = :role AND u.status = :status ")
-    Page<UserDTO> getUsersByRoleAndStatus(ERole role, EStatus status, Pageable pageable);
-
-    @Query("SELECT NEW com.ravi.orbit.dto.UserDTO(u.id, u.firstName, u.middleName, u.lastName, " +
-            " u.phone, u.email, u.username, u.gender, u.dob, r.title, u.status, u.imageUrl, " +
-            " u.address, u.zipcode, u.state, u.countryCode ) " +
-            " FROM User u " +
-            " LEFT JOIN UserRoles ur ON u.id = ur.userId " +
-            " LEFT JOIN Role r ON ur.roleId = r.id " +
-            " WHERE u.id = :id ")
-    Optional<UserDTO> getUserDTOById(UUID id);
-
-    @Query("SELECT NEW com.ravi.orbit.dto.UserDTO(u.id, u.firstName, u.middleName, u.lastName, " +
-            " u.phone, u.email, u.username, u.gender, u.dob, r.title, u.status, u.imageUrl, " +
-            " u.address, u.zipcode, u.state, u.countryCode ) " +
-            " FROM User u " +
-            " LEFT JOIN UserRoles ur ON u.id = ur.userId " +
-            " LEFT JOIN Role r ON ur.roleId = r.id " +
-            " WHERE u.username = :username ")
-    Optional<UserDTO> getUserDTOByUsername(String username);
+    @Query("SELECT u FROM User u WHERE u.status = :status AND EXISTS " +
+            "(SELECT 1 FROM UserRoles ur JOIN ur.role r " +
+            "WHERE ur.user = u AND r.title = :role AND r.status = :roleStatus)")
+    Page<User> getUsersByRoleAndStatus(ERole role, EStatus status, EStatus roleStatus, Pageable pageable);
 
 //    @Query("SELECT NEW com.ravi.orbit.dto.UserDTO(u.username, u.password) " +
 //            " FROM User u " +
